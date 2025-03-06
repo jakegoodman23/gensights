@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GenSights Tool</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='images/favicon.svg')}}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1><i class="fas fa-chart-line"></i> GenSights Tool</h1>
+        <p>
+          Select a customer to generate insights, visualizations, and reports
+        </p>
+      </header>
+
+      <main>
+        <section class="selection-section">
+          <div class="customer-container">
+            <div class="selection-content">
+              <i class="fas fa-building customer-icon"></i>
+              <h2>Select a Customer</h2>
+              <p>Choose a customer to analyze</p>
+              <select id="customerSelect" class="customer-dropdown">
+                <option value="" disabled selected>
+                  -- Select Customer --
+                </option>
+                <option value="customer1">Scranton Hospital</option>
+                <option value="customer2">Brooklyn Hospital</option>
+                <option value="customer3">Pawnee Hospital</option>
+                <option value="customer4">Windy City Hospital</option>
+              </select>
+              <button id="loadCustomerBtn" class="analyze-button">
+                Analyze Customer Data 🤖
+              </button>
+              <p class="demo-note">
+                Demo version: All selections use sample data
+              </p>
+            </div>
+            <div class="loading-container" style="display: none">
+              <div class="loading-progress">
+                <div class="progress-bar" id="progressBar"></div>
+              </div>
+              <p id="uploadStatus">Loading...</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="features-section">
+          <h2>What You'll Get</h2>
+          <div class="features-grid">
+            <div class="feature-card">
+              <i class="fas fa-lightbulb"></i>
+              <h3>Data Insights</h3>
+              <p>
+                Discover positive and negative trends at location, region, and
+                overall levels
+              </p>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-file-lines"></i>
+              <h3>Executive Summary</h3>
+              <p>Get a concise overview of key findings and recommendations</p>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-chart-simple"></i>
+              <h3>Data Visualizations</h3>
+              <p>View easy-to-understand charts and graphs of your data</p>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-file-powerpoint"></i>
+              <h3>Presentation Deck</h3>
+              <p>Download a detailed PowerPoint ready for stakeholder review</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <p>
+          &copy;
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          GenSights Tool
+        </p>
+      </footer>
+    </div>
+
+    <!-- Error Toast -->
+    <div id="errorToast" class="toast error">
+      <div class="toast-content">
+        <i class="fas fa-circle-exclamation"></i>
+        <div class="toast-message" id="errorMessage"></div>
+      </div>
+      <button class="toast-close">&times;</button>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="successToast" class="toast success">
+      <div class="toast-content">
+        <i class="fas fa-circle-check"></i>
+        <div class="toast-message" id="successMessage"></div>
+      </div>
+      <button class="toast-close">&times;</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  </body>
+</html>
