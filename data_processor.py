@@ -27,8 +27,6 @@ class DataProcessor:
             "Q" + df["quarter"].astype(str) + " " + df["year"].astype(str)
         )
 
-        df = df[df["quarter_year"].isin(["Q4 2024", "Q3 2024"])]
-
         metric_cols = [
             "add_on_num",
             "add_on_den",
@@ -39,8 +37,8 @@ class DataProcessor:
             "fcots_num",
             "fcots_den",
             "release_minutes",
-            "denial_rate_num",
-            "denial_rate_den",
+            "cancel_rate_num",
+            "cancel_rate_den",
             "total_request_minutes",
             "ptu_num",
             "ptu_den",
@@ -64,7 +62,7 @@ class DataProcessor:
         data["add_on_pct"] = data["add_on_num"] / data["add_on_den"]
         data["turnover_time"] = data["turnover_num"] / data["turnover_den"]
         data["fcots_pct"] = data["fcots_num"] / data["fcots_den"]
-        data["denial_rate_pct"] = data["denial_rate_num"] / data["denial_rate_den"]
+        data["cancel_rate_pct"] = data["cancel_rate_num"] / data["cancel_rate_den"]
 
         return data
 
@@ -83,7 +81,7 @@ class DataProcessor:
                 "case_minutes",
                 "turnover_time",
                 "add_on_pct",
-                "denial_rate_pct",
+                "cancel_rate_pct",
                 "primetime_utilization_pct",
                 "fcots_pct",
             ]
@@ -96,7 +94,7 @@ class DataProcessor:
                 "case_minutes",
                 "turnover_time",
                 "add_on_pct",
-                "denial_rate_pct",
+                "cancel_rate_pct",
                 "primetime_utilization_pct",
                 "fcots_pct",
             ]
@@ -115,8 +113,8 @@ class DataProcessor:
         customer_df["add_on_pct_qoq"] = (
             customer_df["add_on_pct"].diff() * 100
         )  # Percentage point change
-        customer_df["denial_rate_pct_qoq"] = (
-            customer_df["denial_rate_pct"].diff() * 100
+        customer_df["cancel_rate_pct_qoq"] = (
+            customer_df["cancel_rate_pct"].diff() * 100
         )  # Percentage point change
         customer_df["primetime_utilization_pct_qoq"] = (
             customer_df["primetime_utilization_pct"].diff() * 100
@@ -141,8 +139,8 @@ class DataProcessor:
             region_df.loc[mask, "add_on_pct_qoq"] = (
                 region_df.loc[mask, "add_on_pct"].diff() * 100
             )
-            region_df.loc[mask, "denial_rate_pct_qoq"] = (
-                region_df.loc[mask, "denial_rate_pct"].diff() * 100
+            region_df.loc[mask, "cancel_rate_pct_qoq"] = (
+                region_df.loc[mask, "cancel_rate_pct"].diff() * 100
             )
             region_df.loc[mask, "primetime_utilization_pct_qoq"] = (
                 region_df.loc[mask, "primetime_utilization_pct"].diff() * 100

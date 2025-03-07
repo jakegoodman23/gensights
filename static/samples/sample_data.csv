@@ -1,4 +1,4 @@
-﻿tenant_name,location_name,region_name,dt_month,add_on_num,add_on_den,case_volume,case_minutes,turnover_num,turnover_den,fcots_num,fcots_den,release_minutes,denial_rate_num,denial_rate_den,total_request_minutes,ptu_num,ptu_den
+﻿tenant_name,location_name,region_name,dt_month,add_on_num,add_on_den,case_volume,case_minutes,turnover_num,turnover_den,fcots_num,fcots_den,release_minutes,cancel_rate_num,cancel_rate_den,total_request_minutes,ptu_num,ptu_den
 Sacred Heart Hospital,Greater Sacramento,Sacramento,1/1/23,199,959,1120,117117,10859,345,100,184,13095,48,396,39909,108554,143640
 Sacred Heart Hospital,Greater Sacramento,Sacramento,2/1/23,231,926,1070,107891,9791,304,81,160,19272,57,399,40609,101325,136800
 Sacred Heart Hospital,Greater Sacramento,Sacramento,3/1/23,226,1011,1135,118423,10965,335,104,198,20548,54,393,46849,116652,157320
