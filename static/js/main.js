@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     loadingContainer.style.display = 'block';
 
     // Update progress status
-    uploadStatus.textContent = 'Loading customer data...';
+    uploadStatus.textContent = 'Gathering customer data...';
 
     // Simulate loading progress
     let progress = 0;
@@ -94,31 +94,67 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="analysis-progress">
                 <div class="analysis-progress-bar"></div>
             </div>
-            <p class="analysis-steps">
-                <span class="step active">Processing data</span>
-                <span class="step">Generating insights</span>
-                <span class="step">Creating PDF report</span>
-            </p>
+            <div class="analysis-steps">
+                <div class="main-step active">
+                    <span class="step-label">Data Collection</span>
+                    <div class="sub-steps">
+                        <span class="sub-step active">Gathering metric data (from application)</span>
+                        <span class="sub-step">Gathering meeting notes (from Notion)</span>
+                        <span class="sub-step">Gathering Becker's news (from Web/Aurora)</span>
+                    </div>
+                </div>
+                <div class="main-step">
+                    <span class="step-label">Synthesizing data with AI</span>
+                </div>
+                <div class="main-step">
+                    <span class="step-label">Creating executive report</span>
+                </div>
+            </div>
         </div>
     `;
     document.body.appendChild(modal);
 
     // Simulate progress for better UX
     const progressBar = modal.querySelector('.analysis-progress-bar');
-    const steps = modal.querySelectorAll('.step');
+    const mainSteps = modal.querySelectorAll('.main-step');
+    const subSteps = modal.querySelectorAll('.sub-step');
     let progress = 0;
 
     const progressInterval = setInterval(() => {
       progress += 1;
       progressBar.style.width = `${Math.min(progress, 95)}%`;
 
-      // Update steps
-      if (progress > 30 && progress <= 60) {
-        steps[0].classList.remove('active');
-        steps[1].classList.add('active');
-      } else if (progress > 60) {
-        steps[1].classList.remove('active');
-        steps[2].classList.add('active');
+      // Update sub-steps during the data collection phase (0-40%)
+      if (progress <= 40) {
+        if (progress <= 10) {
+          // First sub-step is active
+          subSteps[0].classList.add('active');
+        } else if (progress > 10 && progress <= 25) {
+          // First sub-step is completed, second is active
+          subSteps[0].classList.remove('active');
+          subSteps[0].classList.add('completed');
+          subSteps[1].classList.add('active');
+        } else if (progress > 25 && progress <= 40) {
+          // Second sub-step is completed, third is active
+          subSteps[1].classList.remove('active');
+          subSteps[1].classList.add('completed');
+          subSteps[2].classList.add('active');
+        }
+      }
+
+      // Update main steps
+      if (progress > 40 && progress <= 75) {
+        // Mark all data collection sub-steps as completed
+        mainSteps[0].classList.remove('active');
+        subSteps[2].classList.remove('active');
+        subSteps[2].classList.add('completed');
+
+        // Move to the AI synthesis step
+        mainSteps[1].classList.add('active');
+      } else if (progress > 75) {
+        // Move to the report creation step
+        mainSteps[1].classList.remove('active');
+        mainSteps[2].classList.add('active');
       }
 
       if (progress >= 95) {
@@ -151,10 +187,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     <h2>Analysis Results</h2>
                     <div class="results-tabs">
                         <button class="tab-btn active" data-tab="insights">Insights</button>
+                        <button class="tab-btn" data-tab="meeting">Meeting Notes</button>
+                        <button class="tab-btn" data-tab="beckers">Industry News</button>
                         <button class="tab-btn" data-tab="download">Download Report</button>
                     </div>
                     <div class="tab-content active" id="insights-tab">
                         <div class="insights-content"></div>
+                    </div>
+                    <div class="tab-content" id="meeting-tab">
+                        <h3>Meeting Notes Analysis</h3>
+                        <p class="meeting-note">These insights were extracted from recent meeting notes and heavily prioritized in the executive summary.</p>
+                        <div class="meeting-insights-content"></div>
+                    </div>
+                    <div class="tab-content" id="beckers-tab">
+                        <h3>Industry News Analysis</h3>
+                        <p class="beckers-note">These insights were extracted from a recent Becker's Hospital Review article and heavily prioritized in the executive summary.</p>
+                        <div class="beckers-insights-content"></div>
                     </div>
                     <div class="tab-content" id="download-tab">
                         <p>Your executive summary report is ready for download.</p>
@@ -169,14 +217,32 @@ document.addEventListener('DOMContentLoaded', function () {
           // Render markdown content using Marked.js
           const insightsContainer =
             resultsModal.querySelector('.insights-content');
+          const meetingInsightsContainer = resultsModal.querySelector(
+            '.meeting-insights-content'
+          );
+          const beckersInsightsContainer = resultsModal.querySelector(
+            '.beckers-insights-content'
+          );
 
           // Wait for Marked.js to load if it's not already loaded
           if (typeof marked === 'undefined') {
             markedScript.onload = function () {
               insightsContainer.innerHTML = marked.parse(data.insights);
+              meetingInsightsContainer.innerHTML = data.meeting_insights
+                ? marked.parse(data.meeting_insights)
+                : '<p>No meeting notes analysis available.</p>';
+              beckersInsightsContainer.innerHTML = data.beckers_insights
+                ? marked.parse(data.beckers_insights)
+                : '<p>No industry news analysis available.</p>';
             };
           } else {
             insightsContainer.innerHTML = marked.parse(data.insights);
+            meetingInsightsContainer.innerHTML = data.meeting_insights
+              ? marked.parse(data.meeting_insights)
+              : '<p>No meeting notes analysis available.</p>';
+            beckersInsightsContainer.innerHTML = data.beckers_insights
+              ? marked.parse(data.beckers_insights)
+              : '<p>No industry news analysis available.</p>';
           }
 
           // Add event listeners for the modal
@@ -257,10 +323,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Add a sample data link
   const featuresSection = document.querySelector('.features-section');
-  const sampleLink = document.createElement('div');
-  sampleLink.className = 'sample-data-link';
-  sampleLink.innerHTML = `
-      <p>Don't have data to test with? <a href="/sample_csv">Download our sample CSV</a></p>
-  `;
-  featuresSection.appendChild(sampleLink);
 });

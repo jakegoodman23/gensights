@@ -22,8 +22,9 @@
     <div class="container">
       <header>
         <h1><i class="fas fa-chart-line"></i> GenSights Tool</h1>
-        <p>
-          Select a customer to generate insights, visualizations, and reports
+        <p class="text-center">
+          Select a customer to gather data from different sources, synthesize
+          the data with AI, and generate an executive summary
         </p>
       </header>
 
@@ -38,16 +39,13 @@
                 <option value="" disabled selected>
                   -- Select Customer --
                 </option>
-                <option value="customer1">Scranton Hospital</option>
-                <option value="customer2">Brooklyn Hospital</option>
-                <option value="customer3">Pawnee Hospital</option>
-                <option value="customer4">Windy City Hospital</option>
+                <option value="customer1">Sacred Heart Hospital</option>
               </select>
               <button id="loadCustomerBtn" class="analyze-button">
                 Analyze Customer Data 🤖
               </button>
               <p class="demo-note">
-                Demo version: All selections use sample data
+                Demo version: All selections use the same sample data
               </p>
             </div>
             <div class="loading-container" style="display: none">
@@ -63,27 +61,29 @@
           <h2>What You'll Get</h2>
           <div class="features-grid">
             <div class="feature-card">
-              <i class="fas fa-lightbulb"></i>
-              <h3>Data Insights</h3>
+              <i class="fas fa-database"></i>
+              <h3>Multi-Source Insights</h3>
               <p>
-                Discover positive and negative trends at location, region, and
-                overall levels
+                Automated analysis combining metric data, meeting notes, and
+                Becker's healthcare news
               </p>
             </div>
             <div class="feature-card">
-              <i class="fas fa-file-lines"></i>
+              <i class="fas fa-robot"></i>
+              <h3>AI-Powered Synthesis</h3>
+              <p>
+                Advanced AI technology that transforms raw data into actionable
+                business intelligence
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <i class="fas fa-file-pdf"></i>
               <h3>Executive Summary</h3>
-              <p>Get a concise overview of key findings and recommendations</p>
-            </div>
-            <div class="feature-card">
-              <i class="fas fa-chart-simple"></i>
-              <h3>Data Visualizations</h3>
-              <p>View easy-to-understand charts and graphs of your data</p>
-            </div>
-            <div class="feature-card">
-              <i class="fas fa-file-powerpoint"></i>
-              <h3>Presentation Deck</h3>
-              <p>Download a detailed PowerPoint ready for stakeholder review</p>
+              <p>
+                Downloadable, presentation-ready reports with prioritized
+                recommendations
+              </p>
             </div>
           </div>
         </section>

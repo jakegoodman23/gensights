@@ -6,8 +6,6 @@ This module handles loading, preprocessing, and aggregating CSV data at quarter 
 import pandas as pd
 import numpy as np
 
-from metric_definitions import METRIC_DEFINITIONS
-
 
 class DataProcessor:
     def __init__(self, csv_file_path):
@@ -152,11 +150,6 @@ class DataProcessor:
             region_df.loc[mask, "fcots_pct_qoq"] = (
                 region_df.loc[mask, "fcots_pct"].diff() * 100
             )
-
-        print("CUSTOMER DATA")
-        print(customer_df)
-        print("REGION DATA")
-        print(region_df)
         customer_dict = customer_df.to_dict(orient="records")
         region_dict = region_df.to_dict(orient="records")
 

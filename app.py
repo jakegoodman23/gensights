@@ -9,14 +9,11 @@ from flask import (
     jsonify,
     send_file,
 )
-from werkzeug.utils import secure_filename
 import pandas as pd
 from dotenv import load_dotenv
 from data_processor import DataProcessor
 from openai_analyzer import OpenAIAnalyzer
 from pdf_generator import PDFGenerator
-import json
-import time
 
 # Load environment variables
 load_dotenv()
@@ -64,20 +61,34 @@ def analyze_data():
         )
 
     try:
-        # Process the data
+        # Process the metric data
         dp = DataProcessor(current_file_path)
         customer_dict, region_dict = dp.process_file()
 
-        # Analyze the data with OpenAI
+        # Initialize the AI analyzer
         openai_analyzer = OpenAIAnalyzer()
+
+        # Multi-source data collection - First source: Meeting notes
+        success_meeting, meeting_insights = openai_analyzer.extract_meeting_insights()
+        if not success_meeting:
+            meeting_insights = "Meeting insights data unavailable. Proceeding with available data sources."
+
+        # Multi-source data collection - Second source: Becker's healthcare news
+        success_beckers, beckers_insights = openai_analyzer.extract_beckers_insights()
+        if not success_beckers:
+            beckers_insights = "Becker's healthcare news unavailable. Proceeding with available data sources."
+
+        # AI synthesis of all data sources into comprehensive insights
         success, insights = openai_analyzer.generate_insights(
             (customer_dict, region_dict)
         )
-        # Generate PDF content
+
+        # Generate executive summary PDF with synthesized information
         success, pdf_content = openai_analyzer.generate_pdf_content(
             (customer_dict, region_dict)
         )
 
+        # Create the downloadable executive summary
         pdf_generator = PDFGenerator(app.config["REPORTS_FOLDER"])
         success, pdf_path = pdf_generator.generate_pdf_from_markdown(
             pdf_content, "executive_summary.pdf"
@@ -85,7 +96,13 @@ def analyze_data():
         pdf_filename = os.path.basename(pdf_path)
 
         return jsonify(
-            {"success": True, "insights": insights, "pdf_path": pdf_filename}
+            {
+                "success": True,
+                "insights": insights,
+                "meeting_insights": meeting_insights,
+                "beckers_insights": beckers_insights,
+                "pdf_path": pdf_filename,
+            }
         )
 
     except Exception as e:
@@ -97,17 +114,6 @@ def analyze_data():
             jsonify({"success": False, "error": f"Error during analysis: {str(e)}"}),
             500,
         )
-
-
-@app.route("/download/<filename>")
-def download_file(filename):
-    filepath = os.path.join(app.config["REPORTS_FOLDER"], filename)
-
-    if not os.path.exists(filepath):
-        flash("File not found")
-        return redirect(url_for("index"))
-
-    return send_file(filepath, as_attachment=True)
 
 
 @app.route("/sample_csv")
@@ -151,10 +157,7 @@ def use_sample_data():
 
         # For demo purposes, we'll add a customer name to the filename
         customer_mapping = {
-            "customer1": "Scranton Hospital",
-            "customer2": "Brooklyn Hospital",
-            "customer3": "Pawnee Hospital",
-            "customer4": "Windy City Hospital",
+            "customer1": "Sacred Heart Hospital",
         }
 
         customer_name = customer_mapping.get(customer_id, "Sample Customer")
@@ -176,6 +179,19 @@ def use_sample_data():
             ),
             400,
         )
+
+
+@app.route("/download/<filename>")
+def download_file(filename):
+    """Download a generated report file."""
+    try:
+        file_path = os.path.join(app.config["REPORTS_FOLDER"], filename)
+        if not os.path.exists(file_path):
+            return jsonify({"error": "File not found"}), 404
+
+        return send_file(file_path, as_attachment=True, download_name=filename)
+    except Exception as e:
+        return jsonify({"error": f"Error downloading file: {str(e)}"}), 500
 
 
 if __name__ == "__main__":
